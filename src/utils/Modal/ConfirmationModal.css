@@ -1,0 +1,87 @@
+/* Overlay styling */
+.confirmation-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed; /* Fixes overlay to the viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+  
+  /* Modal content styling - Centered properly */
+  .confirmation-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    max-width: 90%;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative; /* Keeps it inside the overlay */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Modal body */
+  .confirmation-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Message text */
+  .confirmation-modal-message {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons container */
+  .confirmation-modal-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Button styles */
+  .confirmation-modal-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .confirmation-modal-confirm {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .confirmation-modal-confirm:hover {
+    background-color: #45a049;
+  }
+  
+  .confirmation-modal-cancel {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .confirmation-modal-cancel:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
