@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Store } from 'lucide-react';
 import './StoreRegister.css';
 import countriesData from '../../assets/countries.json';
@@ -6,10 +6,8 @@ import { StoreRegisterFormValidator } from '../../utils/Validator/StoreRegisterF
 import { showErrorToast, showSuccessToast } from '../../utils/Toast/Toast';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal';
-
-type BusinessType = 'Restaurant' | 'Convenience Store' | 'Coffee Shops' | 'Bakeries';
-type Status = 'ACTIVE' | 'INACTIVE';
-type CuisineType = 'American' | 'BBQ' | 'Asian' | 'Italian' | 'Chinese' | 'Indian' | 'Mexican' | 'Thai' | 'Korean';
+import { StoreForm } from '../../Types';
+import { deliveryPartners } from '../../assets/MockDeleveryPartners';
 
 const demoProfileDetails = {
   firstname: "Debidutta",
@@ -19,83 +17,53 @@ const demoProfileDetails = {
   password: "PASSWORD1234"
 }
 
-export interface StoreForm {
-  id?: number;
-  posId?: number;
-  deliveryPartnerID: number[];
-  storeName: string;
-  brandName: string;
-  businessType: BusinessType;
-  firstName: string;
-  lastName: string;
-  contactNumber: string;
-  email: string;
-  password: string;
-  streetAddress: string;
-  floor: number | null;
-  city: string;
-  region: string;
-  country: string;
-  postalCode: string;
-  neighbourhood: string;
-  cuisineType: CuisineType;
-  numberOfLocation: number;
-  description: string;
-  websiteUrl: string;
-  status: Status;
-  available: boolean;
-  openTime: string;
-  closeTime: string;
-  operatingDays: string[];
-  // Bank Details
-  bankName: string;
-  accountNumber: string;
-  accountHolder: string;
-  ifscCode: string;
-  iban: string;
-  swiftCode: string;
-  isPrimary: boolean;
-}
-
 export const initialFormState: StoreForm = {
-  deliveryPartnerID: [],
-  storeName: '',
-  brandName: '',
-  businessType: 'Restaurant',
-  firstName: '',
-  lastName: '',
-  contactNumber: '',
-  email: '',
-  password: '',
-  streetAddress: '',
-  floor: 0,
-  city: '',
-  region: '',
-  country: '',
-  postalCode: '',
-  neighbourhood: '',
-  cuisineType: 'American',
-  numberOfLocation: 1,
-  description: '',
-  websiteUrl: '',
-  status: 'ACTIVE',
-  available: true,
-  openTime: '',
-  closeTime: '',
-  operatingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-  // Bank Details
-  bankName: '',
-  accountNumber: '',
-  accountHolder: '',
-  ifscCode: '',
-  iban: '',
-  swiftCode: '',
-  isPrimary: true
+  storeInfo: {
+    posId: 0,
+    deliveryPartnerID: [],
+    storeName: '',
+    brandName: '',
+    businessType: 'Restaurant',
+    firstName: '',
+    lastName: '',
+    contactNumber: '',
+    email: '',
+    password: '',
+    neighbourhood: '',
+    cuisineType: 'American',
+    numberOfLocation: 1,
+    description: '',
+    websiteUrl: '',
+    status: 'ACTIVE',
+    available: true,
+    openTime: '',
+    closeTime: '',
+    operatingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  },
+  storeAddress: {
+    streetAddress: '',
+    floor: 0,
+    city: '',
+    region: '',
+    country: '',
+    postalCode: '',
+    latitude: 0,
+    longitude: 0,
+  },
+  storeBankDetails: {
+    bankName: '',
+    accountNumber: '',
+    accountHolder: '',
+    ifscCode: '',
+    iban: '',
+    swiftCode: '',
+    isPrimary: true
+  }
 };
 
 interface RenderAddressProps {
   formData: StoreForm;
-  handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleInputChange: (section: string, name: string, value: any) => void;
 }
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -122,6 +90,10 @@ const steps = [
     description: 'Working hours and days'
   },
   {
+    title: 'Delivery Partners',
+    description: 'Choose delivery services'
+  },
+  {
     title: 'Bank Details',
     description: 'Payment information'
   }
@@ -139,37 +111,91 @@ export default function StoreRegister() {
 
   // call api here to fetch user details
   useEffect(() => {
-    setFormData(prev => ({ ...prev, firstName: demoProfileDetails.firstname}));
-    setFormData(prev => ({ ...prev, lastName: demoProfileDetails.lastname}));
-    setFormData(prev => ({ ...prev, email: demoProfileDetails.email}));
-    setFormData(prev => ({ ...prev, contactNumber: demoProfileDetails.contactNumber}));
-  }, [])
+    setFormData(prev => ({
+      ...prev,
+      storeInfo: {
+        ...prev.storeInfo,
+        posId: 1234,
+        firstName: demoProfileDetails.firstname,
+        lastName: demoProfileDetails.lastname,
+        email: demoProfileDetails.email,
+        contactNumber: demoProfileDetails.contactNumber,
+        password: demoProfileDetails.password
+      }
+    }));
+  }, []);
 
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleInputChange = (section: string, name: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section as keyof StoreForm],
+        [name]: value
+      }
+    }));
   };
 
   const handleDayToggle = (day: string) => {
     setFormData(prev => ({
       ...prev,
-      operatingDays: prev.operatingDays.includes(day)
-        ? prev.operatingDays.filter(d => d !== day)
-        : [...prev.operatingDays, day]
+      storeInfo: {
+        ...prev.storeInfo,
+        operatingDays: prev.storeInfo.operatingDays.includes(day)
+          ? prev.storeInfo.operatingDays.filter(d => d !== day)
+          : [...prev.storeInfo.operatingDays, day]
+      }
+    }));
+  };
+
+  const handleDeliveryPartnerToggle = (partnerId: number) => {
+    setFormData(prev => ({
+      ...prev,
+      storeInfo: {
+        ...prev.storeInfo,
+        deliveryPartnerID: prev.storeInfo.deliveryPartnerID.includes(partnerId)
+          ? prev.storeInfo.deliveryPartnerID.filter(id => id !== partnerId)
+          : [...prev.storeInfo.deliveryPartnerID, partnerId]
+      }
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    // console.log("form data is here inside handlesubmit", formData);
+    
     // onsubmit logic 
     const validationResult = StoreRegisterFormValidator(formData);
-
+    
+    
     if (validationResult.isValid) {
-      showSuccessToast('Store registration successful!');
-      console.log(formData);
-      // TODO: Add your submission logic
+      try {
+        
+        console.log("form data - - ", formData);
+        
+        const response = await fetch('http://164.164.178.27:5000/api/v1/store/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        console.log("response is - ", response);
+        
+        if (response.ok) {
+          showSuccessToast('Store registration successful!');
+          // Navigate to dashboard or another page after successful registration
+          navigate('/dashboard');
+        } else {
+          const errorData = await response.json();
+          showErrorToast(errorData.message || 'Registration failed. Please try again.');
+        }
+
+        
+      } catch (error) {
+        console.error('Registration error:', error);
+        showErrorToast('Network error. Please check your connection and try again.');
+      }
     } else {
       // Show only the first error
       if (validationResult.errors.length > 0) {
@@ -177,8 +203,6 @@ export default function StoreRegister() {
         return;
       }
     }
-
-    console.log(formData);
   };
 
   const nextStep = () => {
@@ -199,10 +223,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="storeName"
           id="storeName"
-          value={formData.storeName}
-          onChange={handleInputChange}
+          value={formData.storeInfo.storeName}
+          onChange={(e) => handleInputChange('storeInfo', 'storeName', e.target.value)}
           className="store-register-field"
           required
         />
@@ -214,10 +237,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="brandName"
           id="brandName"
-          value={formData.brandName}
-          onChange={handleInputChange}
+          value={formData.storeInfo.brandName}
+          onChange={(e) => handleInputChange('storeInfo', 'brandName', e.target.value)}
           className="store-register-field"
           required
         />
@@ -228,10 +250,9 @@ export default function StoreRegister() {
           Business Type
         </label>
         <select
-          name="businessType"
           id="businessType"
-          value={formData.businessType}
-          onChange={handleInputChange}
+          value={formData.storeInfo.businessType}
+          onChange={(e) => handleInputChange('storeInfo', 'businessType', e.target.value)}
           className="store-register-field"
         >
           <option value="Restaurant">Restaurant</option>
@@ -246,10 +267,9 @@ export default function StoreRegister() {
           Cuisine Type
         </label>
         <select
-          name="cuisineType"
           id="cuisineType"
-          value={formData.cuisineType}
-          onChange={handleInputChange}
+          value={formData.storeInfo.cuisineType}
+          onChange={(e) => handleInputChange('storeInfo', 'cuisineType', e.target.value)}
           className="store-register-field"
         >
           <option value="American">American</option>
@@ -273,12 +293,10 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="firstName"
           id="firstName"
-          value={formData.firstName}
+          value={formData.storeInfo.firstName}
           disabled
           readOnly
-          onChange={handleInputChange}
           className="store-register-field store-register-field-contact-information-disable"
           required
         />
@@ -290,12 +308,10 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="lastName"
           id="lastName"
-          value={formData.lastName}
+          value={formData.storeInfo.lastName}
           disabled
           readOnly
-          onChange={handleInputChange}
           className="store-register-field store-register-field-contact-information-disable"
           required
         />
@@ -307,12 +323,10 @@ export default function StoreRegister() {
         </label>
         <input
           type="email"
-          name="email"
           id="email"
-          value={formData.email}
+          value={formData.storeInfo.email}
           disabled
           readOnly
-          onChange={handleInputChange}
           className="store-register-field store-register-field-contact-information-disable"
           required
         />
@@ -324,12 +338,10 @@ export default function StoreRegister() {
         </label>
         <input
           type="tel"
-          name="contactNumber"
           id="contactNumber"
-          value={formData.contactNumber}
+          value={formData.storeInfo.contactNumber}
           disabled
           readOnly
-          onChange={handleInputChange}
           className="store-register-field store-register-field-contact-information-disable"
           required
         />
@@ -338,75 +350,83 @@ export default function StoreRegister() {
   );
 
   const renderAddress = ({ formData, handleInputChange }: RenderAddressProps) => (
-    <div className="store-register-grid">
+    <div className="store-register-grid address-grid">
       <div className="sm:col-span-2">
         <label htmlFor="streetAddress" className="store-register-label">
           Street Address
         </label>
         <input
           type="text"
-          name="streetAddress"
           id="streetAddress"
-          value={formData.streetAddress}
-          onChange={handleInputChange}
+          value={formData.storeAddress.streetAddress}
+          onChange={(e) => handleInputChange('storeAddress', 'streetAddress', e.target.value)}
           className="store-register-field"
           required
         />
       </div>
 
-      <div>
+      <div className="address-small-field">
         <label htmlFor="floor" className="store-register-label">
-          Floor (optional)
+          Floor
         </label>
         <input
           type="number"
-          name="floor"
           id="floor"
-          value={formData.floor || ''}
-          onChange={handleInputChange}
+          value={formData.storeAddress.floor || ''}
+          onChange={(e) => handleInputChange('storeAddress', 'floor', e.target.value === '' ? null : Number(e.target.value))}
           className="store-register-field"
         />
       </div>
 
-      <div>
+      <div className="address-small-field">
+        <label htmlFor="neighbourhood" className="store-register-label">
+          Neighbourhood
+        </label>
+        <input
+          type="text"
+          id="neighbourhood"
+          value={formData.storeInfo.neighbourhood}
+          onChange={(e) => handleInputChange('storeInfo', 'neighbourhood', e.target.value)}
+          className="store-register-field"
+        />
+      </div>
+
+      <div className="address-small-field">
         <label htmlFor="city" className="store-register-label">
           City
         </label>
         <input
           type="text"
-          name="city"
           id="city"
-          value={formData.city}
-          onChange={handleInputChange}
+          value={formData.storeAddress.city}
+          onChange={(e) => handleInputChange('storeAddress', 'city', e.target.value)}
           className="store-register-field"
           required
         />
       </div>
 
-      <div>
+      <div className="address-small-field">
         <label htmlFor="region" className="store-register-label">
           Region
         </label>
         <input
           type="text"
-          name="region"
           id="region"
-          value={formData.region}
-          onChange={handleInputChange}
+          value={formData.storeAddress.region}
+          onChange={(e) => handleInputChange('storeAddress', 'region', e.target.value)}
           className="store-register-field"
           required
         />
       </div>
 
-      <div>
+      <div className="address-small-field">
         <label htmlFor="country" className="store-register-label">
           Country
         </label>
         <select
-          name="country"
           id="country"
-          value={formData.country}
-          onChange={handleInputChange}
+          value={formData.storeAddress.country}
+          onChange={(e) => handleInputChange('storeAddress', 'country', e.target.value)}
           className="store-register-field"
           required
         >
@@ -419,16 +439,15 @@ export default function StoreRegister() {
         </select>
       </div>
 
-      <div>
+      <div className="address-small-field">
         <label htmlFor="postalCode" className="store-register-label">
           Postal Code
         </label>
         <input
           type="text"
-          name="postalCode"
           id="postalCode"
-          value={formData.postalCode}
-          onChange={handleInputChange}
+          value={formData.storeAddress.postalCode}
+          onChange={(e) => handleInputChange('storeAddress', 'postalCode', e.target.value)}
           className="store-register-field"
           required
         />
@@ -444,11 +463,10 @@ export default function StoreRegister() {
         </label>
         <input
           type="number"
-          name="numberOfLocation"
           id="numberOfLocation"
           min="1"
-          value={formData.numberOfLocation}
-          onChange={handleInputChange}
+          value={formData.storeInfo.numberOfLocation}
+          onChange={(e) => handleInputChange('storeInfo', 'numberOfLocation', Number(e.target.value))}
           className="store-register-field"
           required
         />
@@ -460,10 +478,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="url"
-          name="websiteUrl"
           id="websiteUrl"
-          value={formData.websiteUrl}
-          onChange={handleInputChange}
+          value={formData.storeInfo.websiteUrl}
+          onChange={(e) => handleInputChange('storeInfo', 'websiteUrl', e.target.value)}
           className="store-register-field"
         />
       </div>
@@ -473,11 +490,10 @@ export default function StoreRegister() {
           Description
         </label>
         <textarea
-          name="description"
           id="description"
           rows={3}
-          value={formData.description}
-          onChange={handleInputChange}
+          value={formData.storeInfo.description}
+          onChange={(e) => handleInputChange('storeInfo', 'description', e.target.value)}
           className="store-register-field"
           style={{ resize: 'none' }}
         />
@@ -493,10 +509,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="time"
-          name="openTime"
           id="openTime"
-          value={formData.openTime}
-          onChange={handleInputChange}
+          value={formData.storeInfo.openTime}
+          onChange={(e) => handleInputChange('storeInfo', 'openTime', e.target.value)}
           className="store-register-field store-register-field-opentime-closetime"
           required
         />
@@ -508,10 +523,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="time"
-          name="closeTime"
           id="closeTime"
-          value={formData.closeTime}
-          onChange={handleInputChange}
+          value={formData.storeInfo.closeTime}
+          onChange={(e) => handleInputChange('storeInfo', 'closeTime', e.target.value)}
           className="store-register-field store-register-field-opentime-closetime"
           required
         />
@@ -526,7 +540,7 @@ export default function StoreRegister() {
             <label key={day} className="store-register-checkbox-label">
               <input
                 type="checkbox"
-                checked={formData.operatingDays.includes(day)}
+                checked={formData.storeInfo.operatingDays.includes(day)}
                 onChange={() => handleDayToggle(day)}
                 className="store-register-checkbox"
               />
@@ -534,6 +548,38 @@ export default function StoreRegister() {
             </label>
           ))}
         </div>
+      </div>
+    </div>
+  );
+
+  // Simplified delivery partner UI
+  const renderChooseDeliveryPartner = () => (
+    <div>
+      <div className="delivery-partners-header">
+        <h4 className="delivery-partners-title">
+          Select your preferred delivery partners
+        </h4>
+        <span className="delivery-partners-count">
+          {formData.storeInfo.deliveryPartnerID.length} selected
+        </span>
+      </div>
+      
+      <div className="delivery-partner-grid">
+        {deliveryPartners.map(partner => (
+          <div 
+            key={partner.id} 
+            className={`delivery-partner-card ${formData.storeInfo.deliveryPartnerID.includes(partner.id) ? 'selected' : ''}`}
+            onClick={() => handleDeliveryPartnerToggle(partner.id)}
+          >
+            <div className="delivery-partner-logo-container">
+              <img 
+                src={partner.logo} 
+                alt={`Partner ${partner.id} logo`} 
+                className="delivery-partner-logo" 
+              />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -546,10 +592,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="bankName"
           id="bankName"
-          value={formData.bankName}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.bankName}
+          onChange={(e) => handleInputChange('storeBankDetails', 'bankName', e.target.value)}
           className="store-register-field"
           required
         />
@@ -561,10 +606,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="accountHolder"
           id="accountHolder"
-          value={formData.accountHolder}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.accountHolder}
+          onChange={(e) => handleInputChange('storeBankDetails', 'accountHolder', e.target.value)}
           className="store-register-field"
           required
         />
@@ -576,10 +620,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="accountNumber"
           id="accountNumber"
-          value={formData.accountNumber}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.accountNumber}
+          onChange={(e) => handleInputChange('storeBankDetails', 'accountNumber', e.target.value)}
           className="store-register-field"
           required
         />
@@ -591,10 +634,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="ifscCode"
           id="ifscCode"
-          value={formData.ifscCode}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.ifscCode}
+          onChange={(e) => handleInputChange('storeBankDetails', 'ifscCode', e.target.value)}
           className="store-register-field"
           required
         />
@@ -606,10 +648,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="iban"
           id="iban"
-          value={formData.iban}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.iban}
+          onChange={(e) => handleInputChange('storeBankDetails', 'iban', e.target.value)}
           className="store-register-field"
           required
         />
@@ -621,10 +662,9 @@ export default function StoreRegister() {
         </label>
         <input
           type="text"
-          name="swiftCode"
           id="swiftCode"
-          value={formData.swiftCode}
-          onChange={handleInputChange}
+          value={formData.storeBankDetails.swiftCode}
+          onChange={(e) => handleInputChange('storeBankDetails', 'swiftCode', e.target.value)}
           className="store-register-field"
           required
         />
@@ -645,6 +685,8 @@ export default function StoreRegister() {
       case 4:
         return renderOperatingHours();
       case 5:
+        return renderChooseDeliveryPartner();
+      case 6:
         return renderBankDetails();
       default:
         return null;
@@ -664,8 +706,7 @@ export default function StoreRegister() {
           </p>
         </div>
 
-        {/* <form onSubmit={handleSubmit} className="store-register-form"> */}
-        <form className="store-register-form">
+        <form onSubmit={handleSubmit} className="store-register-form">
           <div className="store-register-progress">
             {steps.map((step, index) => (
               <div
@@ -723,10 +764,8 @@ export default function StoreRegister() {
               </button>
             ) : (
               <button
-                // type="submit"
-                type='button'
+                type="submit"
                 className="store-register-button-primary"
-                onClick={handleSubmit}
               >
                 Register
               </button>
@@ -737,7 +776,7 @@ export default function StoreRegister() {
       <ConfirmationModal
         isOpen={isConfirmationOpen}
         onRequestClose={() => setIsConfirmationOpen(false)}
-        message="Are you sure you want to proceed?"
+        message="Want to skip store registration for now?"
         onConfirm={() => {
           setIsConfirmationOpen(false);
           navigate("/")

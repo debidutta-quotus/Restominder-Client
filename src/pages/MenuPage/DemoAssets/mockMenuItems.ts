@@ -137,7 +137,7 @@ export const initialFoodItems: FoodItem[] = [
     maxPrepTime: 25,
     maxPossibleOrders: 20,
     images: [
-      "https://www.plantperks.com/wp-content/uploads/2020/02/IMG_0198-Edit.jpg"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSauRcTuclnQCVy9XtvzdmRwpB4ppEpCs9WGw&s"
     ],
     tags: ["Pizza", "Vegetarian", "Italian"],
     category: "Main Course",
@@ -154,7 +154,7 @@ export const initialFoodItems: FoodItem[] = [
     "maxPrepTime": 18,
     "maxPossibleOrders": 18,
     "images": [
-      "https://example.com/chicken-burger.jpg"
+      "https://thescranline.com/wp-content/uploads/2022/02/crispy-chicken-burger-WEB-01.jpg"
     ],
     "tags": ["Burger", "Chicken", "Fast Food"],
     "category": "Main Course",
@@ -188,7 +188,7 @@ export const initialFoodItems: FoodItem[] = [
     "maxPrepTime": 15,
     "maxPossibleOrders": 20,
     "images": [
-      "https://example.com/veggie-wrap.jpg"
+      "https://www.plantperks.com/wp-content/uploads/2020/02/IMG_0198-Edit.jpg"
     ],
     "tags": ["Healthy", "Vegetarian", "Wrap"],
     "category": "Appetizer",
@@ -222,7 +222,7 @@ export const initialFoodItems: FoodItem[] = [
     "maxPrepTime": 30,
     "maxPossibleOrders": 15,
     "images": [
-      "https://example.com/spaghetti-bolognese.jpg"
+      "https://www.slimmingeats.com/blog/wp-content/uploads/2010/04/spaghetti-bolognese-36.jpg"
     ],
     "tags": ["Pasta", "Italian", "Meat"],
     "category": "Main Course",

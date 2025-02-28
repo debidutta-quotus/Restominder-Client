@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
-import './MenuService.css';
+import './Menu.css';
 import MenuCard from './components/MenuCard';
 import EditMenu from './Features/EditMenu';
 import { FoodItem, initialFoodItems } from './DemoAssets/mockMenuItems';
@@ -9,7 +9,7 @@ import nonVeg from '../../assets/non_veg.png';
 import { CategoryGroup } from './DemoAssets/mockMenuItems';
 import AddMenu from './Features/AddMenu';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal'; // Import ConfirmationModal
-import { deleteMenuItem } from './Features/DeleteMenu'; // Import the service
+import { deleteMenuItem } from './Services/DeleteMenu'; // Import the service
 
 // Define a type that matches the MenuItemFormData interface from EditMenu
 interface MenuItemFormData {
