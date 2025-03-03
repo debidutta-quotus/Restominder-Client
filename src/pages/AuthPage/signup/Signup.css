@@ -11,12 +11,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2D314E;
-  padding: 20px;
-  background-image: url('../assets/food-pattern.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  position: relative;
+  z-index: 10;
 }
 
 .auth-signup-page-form-container {
@@ -32,12 +28,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 20;
 }
 
 /* Logo and branding */
 .auth-signup-page-logo-container {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
   margin-bottom: 15px;
 }
 
@@ -55,6 +55,7 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 2px;
+  text-align: center;
 }
 
 .auth-signup-page-brand-tagline {
@@ -62,12 +63,15 @@
   letter-spacing: 1px;
   color: #666;
   text-transform: uppercase;
+  text-align: center;
 }
 
 /* Signup form section */
 .auth-signup-page-form-section {
   flex: 1;
-  padding: 30px;
+  padding: 20px 20px 20px 30px;
+  margin-top: auto;
+  margin-bottom: auto;
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -265,9 +269,11 @@
 
 /* Food image section - now included within the white container */
 .auth-signup-page-food-image-section {
-  width: calc(50% - 20px);
+  width: calc(50% + 20px);
   /* Equal width for right side */
-  height: calc(100% - 40px);
+  height: calc(100%);
+  margin-top: auto;
+  margin-bottom: auto;
   position: relative;
   overflow: hidden;
   border-top-right-radius: 20px;
@@ -295,9 +301,10 @@
 }
 
 .auth-signup-page-overlay-title {
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 40px;
+  font-weight: 500;
   margin-bottom: 8px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .auth-signup-page-overlay-text {

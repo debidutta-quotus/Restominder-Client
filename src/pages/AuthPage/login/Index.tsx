@@ -3,6 +3,7 @@ import './Login.css';
 import logoImage from '../../../assets/Restominder/logo.png';
 import foodImage from '../../../assets/Restominder/food1.png';
 import { useNavigate } from 'react-router-dom';
+import Background from '../../BackgroundPage/Index';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,6 +21,8 @@ const Login = () => {
     e.preventDefault();
     console.log({ email, password, rememberMe });
     // Handle login logic here
+
+    navigate('/menu')
   };
 
   return (
@@ -124,6 +127,8 @@ const Login = () => {
           </div>
         </div>
       </div>
+      
+      <Background />
     </div>
   );
 };

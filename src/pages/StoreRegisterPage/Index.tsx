@@ -7,7 +7,7 @@ import { showErrorToast, showSuccessToast } from '../../utils/Toast/Toast';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal';
 import { StoreForm } from '../../Types';
-import { deliveryPartners } from '../../assets/MockDeleveryPartners';
+import { deliveryPartners } from '../../assets/DummyData/MockDeleveryPartners';
 
 const demoProfileDetails = {
   firstname: "Debidutta",

@@ -12,7 +12,6 @@ import veg from "../../../assets/veg.png";
 import nonVeg from "../../../assets/non_veg.png";
 import { BeatLoader } from 'react-spinners';
 
-
 interface FoodItem {
   _id: string;
   storeId: string;

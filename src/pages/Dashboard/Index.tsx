@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Bell, BarChart2, ShoppingBag, Users, Settings, Moon } from 'lucide-react';
+import { Search, Bell, BarChart2, ShoppingBag, Users, Settings } from 'lucide-react';
 import './Dashboard.css';
 import AuthService from '../../services/AuthService';
 import SplashScreenPage from '../SplashScreenPage/Index';

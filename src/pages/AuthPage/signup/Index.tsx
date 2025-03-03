@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './Signup.css';
 import logoImage from '../../../assets/Restominder/logo.png';
-import foodImage from '../../../assets/Restominder/food1.png';
+import foodImage from '../../../assets/Restominder/food2.jpg';
 import { useNavigate } from 'react-router-dom';
+import Background from '../../BackgroundPage/Index';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -21,7 +22,8 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ name, email, password, confirmPassword });
-    // Handle signup logic here
+    
+    navigate('/success')
   };
 
   return (
@@ -151,10 +153,12 @@ const Signup = () => {
           <img src={foodImage} alt="Food dish" className="auth-signup-page-food-image" />
           <div className="auth-signup-page-image-overlay">
             <h2 className="auth-signup-page-overlay-title">Food is the ingredient that binds us together.</h2>
-            <p className="auth-signup-page-overlay-text">Join our community of food lovers and discover amazing recipes.</p>
+            {/* <p className="auth-signup-page-overlay-text">Join our community of food lovers and discover amazing recipes.</p> */}
           </div>
         </div>
       </div>
+      
+      <Background />
     </div>
   );
 };

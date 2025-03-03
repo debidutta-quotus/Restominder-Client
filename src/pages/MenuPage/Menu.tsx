@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import './Menu.css';
 import MenuCard from './components/MenuCard';
-import EditMenu from './Features/EditMenu';
+import EditMenu from './Modals/EditMenu';
 import { FoodItem, initialFoodItems } from './DemoAssets/mockMenuItems';
 import veg from '../../assets/veg.png';
 import nonVeg from '../../assets/non_veg.png';
 import { CategoryGroup } from './DemoAssets/mockMenuItems';
-import AddMenu from './Features/AddMenu';
+import AddMenu from './Modals/AddMenu';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal'; // Import ConfirmationModal
 import { deleteMenuItem } from './Services/DeleteMenu'; // Import the service
 
