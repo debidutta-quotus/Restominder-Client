@@ -20,9 +20,8 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ email, password, rememberMe });
-    // Handle login logic here
 
-    navigate('/menu')
+    navigate('/');
   };
 
   return (

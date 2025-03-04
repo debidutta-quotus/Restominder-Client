@@ -1,7 +1,7 @@
 /* Dashboard Layout */
 .dashboard-page-container {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 40px);
     background-color: #f5f7fa;
     color: #333;
     font-family: 'Inter', sans-serif;

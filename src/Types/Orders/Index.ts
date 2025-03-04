@@ -24,3 +24,5 @@ export interface Order {
     items?: OrderItem[]; // Optional for backward compatibility
     timestamp: string; // We'll keep this for sorting/display
 }
+
+export type PartnerType = string;

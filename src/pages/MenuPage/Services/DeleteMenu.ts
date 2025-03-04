@@ -1,6 +1,6 @@
 // deleteMenuService.ts
 
-import { FoodItem } from '../DemoAssets/mockMenuItems'; // Adjust the import path
+import { FoodItem } from '../../../assets/DummyData/MockMenuItems'; // Adjust the import path
 
 export const deleteMenuItem = async (item: FoodItem): Promise<boolean> => {
   try {
