@@ -3,30 +3,14 @@ import { PlusCircle } from 'lucide-react';
 import './Menu.css';
 import MenuCard from './components/MenuCard';
 import EditMenu from './Modals/EditMenu';
-import { FoodItem, initialFoodItems } from '../../assets/DummyData/MockMenuItems';
+import { FoodItem, initialFoodItems, CategoryGroup } from '../../assets/DummyData/MockMenuItems';
 import veg from '../../assets/veg.png';
 import nonVeg from '../../assets/non_veg.png';
-import { CategoryGroup } from '../../assets/DummyData/MockMenuItems';
 import AddMenu from './Modals/AddMenu';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal'; // Import ConfirmationModal
 import { deleteMenuItem } from './Services/DeleteMenu'; // Import the service
+import { MenuItemFormData } from '../../Types/Menu/Index';
 
-// Define a type that matches the MenuItemFormData interface from EditMenu
-interface MenuItemFormData {
-  _id?: string;
-  storeId?: string;
-  itemName: string;
-  description: string;
-  price: number;
-  minPrepTime: number;
-  maxPrepTime: number;
-  maxPossibleOrders: number;
-  images: string[];
-  tags: string[];
-  category: string;
-  isVeg: boolean;
-  availability: boolean;
-}
 
 const MenuService: React.FC = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -50,7 +34,7 @@ const MenuService: React.FC = () => {
       ...newItemFormData,
       _id: String(Date.now()), // Replace with your ID generation logic
       storeId: "store001", // Replace with your store ID
-      availability: true,
+      available: true,
     };
 
     setFoodItems([...foodItems, newItem]);
@@ -65,7 +49,7 @@ const MenuService: React.FC = () => {
 
   const handleDeleteClick = (item: FoodItem) => {
     setSelectedItem(item);
-    setDeleteConfirmationMessage(`Are you sure you want to delete "${item.itemName}"?`);
+    setDeleteConfirmationMessage(`Are you sure you want to delete "${item.name}"?`);
     setConfirmationModalOpen(true); // Open the modal
     console.log("item clicked to delete is - ", item);
   };

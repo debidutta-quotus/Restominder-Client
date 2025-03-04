@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Store } from 'lucide-react';
 import './StoreRegister.css';
 import countriesData from '../../assets/countries.json';
@@ -8,18 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal';
 import { StoreForm } from '../../Types';
 import { deliveryPartners } from '../../assets/DummyData/MockDeleveryPartners';
-
-const demoProfileDetails = {
-  firstname: "Debidutta",
-  lastname: "Acharya",
-  email: "debidutta.acharya@quotus.co.in",
-  contactNumber: "6371875968",
-  password: "PASSWORD1234"
-}
+import { registerStore } from './API/StoreRegister';
+import { PulseLoader } from 'react-spinners';
 
 export const initialFormState: StoreForm = {
   storeInfo: {
-    posId: 0,
+    // posId: 1,
     deliveryPartnerID: [],
     storeName: '',
     brandName: '',
@@ -103,27 +97,12 @@ export default function StoreRegister() {
   const [formData, setFormData] = useState<StoreForm>(initialFormState);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  
+  const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
+
   const navigate = useNavigate();
   const handleSkipClicked = () => {
     setIsConfirmationOpen(true);
   }
-
-  // call api here to fetch user details
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      storeInfo: {
-        ...prev.storeInfo,
-        posId: 1234,
-        firstName: demoProfileDetails.firstname,
-        lastName: demoProfileDetails.lastname,
-        email: demoProfileDetails.email,
-        contactNumber: demoProfileDetails.contactNumber,
-        password: demoProfileDetails.password
-      }
-    }));
-  }, []);
 
   const handleInputChange = (section: string, name: string, value: any) => {
     setFormData(prev => ({
@@ -161,46 +140,26 @@ export default function StoreRegister() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("form data is here inside handlesubmit", formData);
-    
+    console.log("form data is here inside handlesubmit", formData);
+
     // onsubmit logic 
     const validationResult = StoreRegisterFormValidator(formData);
-    
-    
+
     if (validationResult.isValid) {
       try {
-        
-        console.log("form data - - ", formData);
-        
-        const response = await fetch('http://164.164.178.27:5000/api/v1/store/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
 
-        console.log("response is - ", response);
-        
-        if (response.ok) {
-          showSuccessToast('Store registration successful!');
-          // Navigate to dashboard or another page after successful registration
-          navigate('/dashboard');
-        } else {
-          const errorData = await response.json();
-          showErrorToast(errorData.message || 'Registration failed. Please try again.');
-        }
-
-        
-      } catch (error) {
-        console.error('Registration error:', error);
-        showErrorToast('Network error. Please check your connection and try again.');
+        setIsRegistrationLoading(true);
+        const responseData = await registerStore(formData);
+        setIsRegistrationLoading(false);
+        console.log('Registration response:', responseData);
+        showSuccessToast('Store registration successful!');
+        navigate('/dashboard');
+      } catch (error: any) {
+        showErrorToast(error.message || 'Registration failed. Please try again.');
       }
     } else {
-      // Show only the first error
       if (validationResult.errors.length > 0) {
         showErrorToast(validationResult.errors[0]);
-        return;
       }
     }
   };
@@ -295,9 +254,8 @@ export default function StoreRegister() {
           type="text"
           id="firstName"
           value={formData.storeInfo.firstName}
-          disabled
-          readOnly
-          className="store-register-field store-register-field-contact-information-disable"
+          onChange={(e) => handleInputChange('storeInfo', 'firstName', e.target.value)}
+          className="store-register-field"
           required
         />
       </div>
@@ -310,9 +268,8 @@ export default function StoreRegister() {
           type="text"
           id="lastName"
           value={formData.storeInfo.lastName}
-          disabled
-          readOnly
-          className="store-register-field store-register-field-contact-information-disable"
+          onChange={(e) => handleInputChange('storeInfo', 'lastName', e.target.value)}
+          className="store-register-field"
           required
         />
       </div>
@@ -325,9 +282,8 @@ export default function StoreRegister() {
           type="email"
           id="email"
           value={formData.storeInfo.email}
-          disabled
-          readOnly
-          className="store-register-field store-register-field-contact-information-disable"
+          onChange={(e) => handleInputChange('storeInfo', 'email', e.target.value)}
+          className="store-register-field"
           required
         />
       </div>
@@ -340,9 +296,22 @@ export default function StoreRegister() {
           type="tel"
           id="contactNumber"
           value={formData.storeInfo.contactNumber}
-          disabled
-          readOnly
-          className="store-register-field store-register-field-contact-information-disable"
+          onChange={(e) => handleInputChange('storeInfo', 'contactNumber', e.target.value)}
+          className="store-register-field"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="password" className="store-register-label">
+          Password
+        </label>
+        <input
+          type="password"
+          id="password"
+          value={formData.storeInfo.password}
+          onChange={(e) => handleInputChange('storeInfo', 'password', e.target.value)}
+          className="store-register-field"
           required
         />
       </div>
@@ -477,7 +446,7 @@ export default function StoreRegister() {
           Website URL
         </label>
         <input
-          type="url"
+          type="text"
           id="websiteUrl"
           value={formData.storeInfo.websiteUrl}
           onChange={(e) => handleInputChange('storeInfo', 'websiteUrl', e.target.value)}
@@ -513,7 +482,6 @@ export default function StoreRegister() {
           value={formData.storeInfo.openTime}
           onChange={(e) => handleInputChange('storeInfo', 'openTime', e.target.value)}
           className="store-register-field store-register-field-opentime-closetime"
-          required
         />
       </div>
 
@@ -527,7 +495,6 @@ export default function StoreRegister() {
           value={formData.storeInfo.closeTime}
           onChange={(e) => handleInputChange('storeInfo', 'closeTime', e.target.value)}
           className="store-register-field store-register-field-opentime-closetime"
-          required
         />
       </div>
 
@@ -563,19 +530,19 @@ export default function StoreRegister() {
           {formData.storeInfo.deliveryPartnerID.length} selected
         </span>
       </div>
-      
+
       <div className="delivery-partner-grid">
         {deliveryPartners.map(partner => (
-          <div 
-            key={partner.id} 
+          <div
+            key={partner.id}
             className={`delivery-partner-card ${formData.storeInfo.deliveryPartnerID.includes(partner.id) ? 'selected' : ''}`}
             onClick={() => handleDeliveryPartnerToggle(partner.id)}
           >
             <div className="delivery-partner-logo-container">
-              <img 
-                src={partner.logo} 
-                alt={`Partner ${partner.id} logo`} 
-                className="delivery-partner-logo" 
+              <img
+                src={partner.logo}
+                alt={`Partner ${partner.id} logo`}
+                className="delivery-partner-logo"
               />
             </div>
           </div>
@@ -596,7 +563,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.bankName}
           onChange={(e) => handleInputChange('storeBankDetails', 'bankName', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
 
@@ -610,7 +576,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.accountHolder}
           onChange={(e) => handleInputChange('storeBankDetails', 'accountHolder', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
 
@@ -624,7 +589,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.accountNumber}
           onChange={(e) => handleInputChange('storeBankDetails', 'accountNumber', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
 
@@ -638,7 +602,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.ifscCode}
           onChange={(e) => handleInputChange('storeBankDetails', 'ifscCode', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
 
@@ -652,7 +615,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.iban}
           onChange={(e) => handleInputChange('storeBankDetails', 'iban', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
 
@@ -666,7 +628,6 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.swiftCode}
           onChange={(e) => handleInputChange('storeBankDetails', 'swiftCode', e.target.value)}
           className="store-register-field"
-          required
         />
       </div>
     </div>
@@ -706,7 +667,7 @@ export default function StoreRegister() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="store-register-form">
+        <form className="store-register-form">
           <div className="store-register-progress">
             {steps.map((step, index) => (
               <div
@@ -764,10 +725,16 @@ export default function StoreRegister() {
               </button>
             ) : (
               <button
-                type="submit"
+                type="button"
                 className="store-register-button-primary"
+                onClick={handleSubmit}
               >
-                Register
+                {!isRegistrationLoading ? "Register" :
+                  (<PulseLoader
+                    color="#d3d3d3"
+                    margin={5}
+                    size={10}
+                  />)}
               </button>
             )}
           </div>

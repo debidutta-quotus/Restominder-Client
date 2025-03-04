@@ -15,10 +15,10 @@ import { BeatLoader } from 'react-spinners';
 interface FoodItem {
   _id: string;
   storeId: string;
-  itemName: string;
+  name: string;
   description: string;
   price: number;
-  availability: boolean;
+  available: boolean;
   minPrepTime: number;
   maxPrepTime: number;
   maxPossibleOrders: number;
@@ -35,10 +35,10 @@ interface MenuCardProps extends FoodItem {
 
 const MenuCard: React.FC<MenuCardProps> = ({
   // _id,
-  itemName,
+  name,
   description,
   price,
-  availability: initialAvailability,
+  available: initialAvailability,
   minPrepTime,
   maxPrepTime,
   // maxPossibleOrders,
@@ -65,7 +65,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
       className={`food-card ${!availability ? "food-card--unavailable" : ""}`}
     >
       <div className="food-card__image">
-        <img src={images[0]} alt={itemName} />
+        <img src={images[0]} alt={name} />
       </div>
       <div className="food-card__content">
         <div className="food-card__main-info">
@@ -81,7 +81,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
                     />
                   </div>
                 </div>
-                <h2 className="food-card__title">{itemName}</h2>
+                <h2 className="food-card__title">{name}</h2>
               </div>
               <span className="food-card__category">{category}</span>
             </div>

@@ -4,7 +4,7 @@ type CuisineType = 'American' | 'BBQ' | 'Asian' | 'Italian' | 'Chinese' | 'India
 
 export interface StoreForm {
   storeInfo: {
-    posId: number;
+    posId?: number;
     deliveryPartnerID: number[];
     storeName: string;
     brandName: string;
@@ -17,8 +17,8 @@ export interface StoreForm {
     neighbourhood: string;
     cuisineType: CuisineType;
     numberOfLocation: number;
-    description: string;
-    websiteUrl: string;
+    description?: string;
+    websiteUrl?: string;
     status: Status;
     available: boolean;
     openTime: string;

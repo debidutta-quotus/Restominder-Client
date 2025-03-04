@@ -14,14 +14,14 @@ const Login = () => {
   const navigate = useNavigate();
 
     const handleSignupClicked = () => {
-        navigate('/signup');
+        navigate('/storeregister');
     };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ email, password, rememberMe });
 
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (

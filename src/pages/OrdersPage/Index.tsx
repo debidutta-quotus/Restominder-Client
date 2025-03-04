@@ -173,7 +173,7 @@ const OrdersPage: React.FC = () => {
 
             showInfoToast(`New Order Received from ${newOrder.channelId.toUpperCase()}`)
 
-        }, 180000); // Add a new order every 3 min
+        }, 10000); // Add a new order every 3 min
 
         return () => clearInterval(interval);
     }, []);

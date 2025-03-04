@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import './sidebar.css';
+import './Sidebar.css';
 import { Menu, X, Home, Clipboard, ShoppingBag } from 'lucide-react';
 
 interface SidebarProps {
@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       <aside className={`sidebar-component-sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-component-header">
           <div className="sidebar-component-logo">
-            <span className="sidebar-component-logo-text">🍽️ RestaurantApp</span>
+            <span className="sidebar-component-logo-text"> Restominder </span>
           </div>
           {collapsed ? (
             <button className="sidebar-component-mobile-toggle" onClick={toggleSidebar}>
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           <ul className="sidebar-component-nav-item">
             <li>
               <NavLink 
-                to="/" 
+                to="/dashboard" 
                 className={({isActive}) => 
                   `sidebar-component-nav-link ${isActive ? 'active' : ''}`
                 }
@@ -86,6 +86,17 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                 <span className="sidebar-component-nav-text">Orders</span>
               </NavLink>
             </li>
+            {/* <li>
+              <NavLink 
+                to="/storeregister" 
+                className={({isActive}) => 
+                  `sidebar-component-nav-link ${isActive ? 'active' : ''}`
+                }
+              >
+                <span className="sidebar-component-icon"><ShoppingBag size={20} /></span>
+                <span className="sidebar-component-nav-text">Store</span>
+              </NavLink>
+            </li> */}
           </ul>
         </nav>
       </aside>

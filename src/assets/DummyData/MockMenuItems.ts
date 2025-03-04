@@ -1,7 +1,7 @@
 export interface FoodItem {
   _id: string,
   storeId: string,
-  itemName: string;
+  name: string;
   description: string;
   price: number;
   minPrepTime: number;
@@ -11,7 +11,7 @@ export interface FoodItem {
   tags: string[];
   category: string;
   isVeg: boolean;
-  availability: boolean;
+  available: boolean;
 }
 
 export interface CategoryGroup {
@@ -23,10 +23,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "3",
     storeId: "store1",
-    itemName: "Chicken Wings",
+    name: "Chicken Wings",
     description: "Spicy and crispy chicken wings served with ranch sauce",
     price: 9.99,
-    availability: true,
+    available: true,
     minPrepTime: 10,
     maxPrepTime: 15,
     maxPossibleOrders: 10,
@@ -40,10 +40,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "4",
     storeId: "store1",
-    itemName: "Paneer Tikka",
+    name: "Paneer Tikka",
     description: "Grilled paneer cubes marinated with spices",
     price: 7.99,
-    availability: true,
+    available: true,
     minPrepTime: 10,
     maxPrepTime: 20,
     maxPossibleOrders: 12,
@@ -59,10 +59,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "5",
     storeId: "store1",
-    itemName: "Butter Chicken",
+    name: "Butter Chicken",
     description: "Creamy tomato-based curry with tender chicken pieces",
     price: 14.99,
-    availability: true,
+    available: true,
     minPrepTime: 20,
     maxPrepTime: 30,
     maxPossibleOrders: 8,
@@ -76,10 +76,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "6",
     storeId: "store1",
-    itemName: "Paneer Butter Masala",
+    name: "Paneer Butter Masala",
     description: "Rich and creamy paneer curry",
     price: 12.99,
-    availability: true,
+    available: true,
     minPrepTime: 20,
     maxPrepTime: 30,
     maxPossibleOrders: 10,
@@ -95,10 +95,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "1",
     storeId: "store1",
-    itemName: "Lemonade",
+    name: "Lemonade",
     description: "Refreshing lemon juice with a hint of mint",
     price: 3.99,
-    availability: true,
+    available: true,
     minPrepTime: 5,
     maxPrepTime: 10,
     maxPossibleOrders: 20,
@@ -112,10 +112,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "2",
     storeId: "store1",
-    itemName: "Cold Coffee",
+    name: "Cold Coffee",
     description: "Chilled coffee blended with milk and sugar",
     price: 4.99,
-    availability: true,
+    available: true,
     minPrepTime: 5,
     maxPrepTime: 10,
     maxPossibleOrders: 15,
@@ -129,10 +129,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     _id: "10",
     storeId: "store1",
-    itemName: "Margherita Pizza",
+    name: "Margherita Pizza",
     description: "Classic pizza with tomato sauce, mozzarella, and basil",
     price: 9.99,
-    availability: true,
+    available: true,
     minPrepTime: 15,
     maxPrepTime: 25,
     maxPossibleOrders: 20,
@@ -146,10 +146,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "12",
     "storeId": "store1",
-    "itemName": "Chicken Burger",
+    "name": "Chicken Burger",
     "description": "Crispy chicken patty with lettuce, tomato, and mayo",
     "price": 7.99,
-    "availability": true,
+    "available": true,
     "minPrepTime": 10,
     "maxPrepTime": 18,
     "maxPossibleOrders": 18,
@@ -163,10 +163,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "13",
     "storeId": "store1",
-    "itemName": "Chocolate Brownie",
+    "name": "Chocolate Brownie",
     "description": "Rich and fudgy chocolate brownie",
     "price": 3.99,
-    "availability": true,
+    "available": true,
     "minPrepTime": 8,
     "maxPrepTime": 12,
     "maxPossibleOrders": 25,
@@ -180,10 +180,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "14",
     "storeId": "store1",
-    "itemName": "Veggie Wrap",
+    "name": "Veggie Wrap",
     "description": "Assorted fresh vegetables wrapped in a whole wheat tortilla.",
     "price": 6.50,
-    "availability": true,
+    "available": true,
     "minPrepTime": 7,
     "maxPrepTime": 15,
     "maxPossibleOrders": 20,
@@ -197,10 +197,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "15",
     "storeId": "store1",
-    "itemName": "Iced Tea",
+    "name": "Iced Tea",
     "description": "Refreshing iced tea with lemon and mint.",
     "price": 2.99,
-    "availability": true,
+    "available": true,
     "minPrepTime": 3,
     "maxPrepTime": 8,
     "maxPossibleOrders": 30,
@@ -214,10 +214,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "16",
     "storeId": "store1",
-    "itemName": "Spaghetti Bolognese",
+    "name": "Spaghetti Bolognese",
     "description": "Classic spaghetti with a rich meat sauce.",
     "price": 11.50,
-    "availability": true,
+    "available": true,
     "minPrepTime": 20,
     "maxPrepTime": 30,
     "maxPossibleOrders": 15,
@@ -231,10 +231,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "17",
     "storeId": "store1",
-    "itemName": "Fruit Salad",
+    "name": "Fruit Salad",
     "description": "A mix of seasonal fresh fruits.",
     "price": 5.50,
-    "availability": true,
+    "available": true,
     "minPrepTime": 5,
     "maxPrepTime": 10,
     "maxPossibleOrders": 22,
@@ -248,10 +248,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "18",
     "storeId": "store1",
-    "itemName": "French Fries",
+    "name": "French Fries",
     "description": "Crispy golden-brown french fries",
     "price": 3.99,
-    "availability": true,
+    "available": true,
     "minPrepTime": 8,
     "maxPrepTime": 12,
     "maxPossibleOrders": 30,
@@ -265,10 +265,10 @@ export const initialFoodItems: FoodItem[] = [
   {
     "_id": "19",
     "storeId": "store1",
-    "itemName": "Garlic Bread",
+    "name": "Garlic Bread",
     "description": "Toasted bread with garlic butter and herbs",
     "price": 4.50,
-    "availability": true,
+    "available": true,
     "minPrepTime": 7,
     "maxPrepTime": 12,
     "maxPossibleOrders": 25,

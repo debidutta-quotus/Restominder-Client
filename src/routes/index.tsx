@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import NotFound from '../pages/NotFoundPage/Index'; 
 import Signup from '../pages/AuthPage/signup/Index';
 import Login from '../pages/AuthPage/login/Index';
@@ -23,15 +23,16 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Authentication & Public Routes */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/success' element={<SuccessAnimation />} />
       <Route path='/login' element={<Login />} />
       <Route path='/welcome' element={<WelcomePage />} />
 
       {/* Protected Routes with Sidebar */}
+      <Route path='/storeregister' element={<StoreRegister />} />
       <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path='/storeregister' element={<StoreRegister />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/menu' element={<MenuServices />} />
         <Route path='/orders' element={<OrdersPage />} />
       </Route>

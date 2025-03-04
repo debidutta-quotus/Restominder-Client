@@ -46,6 +46,21 @@ export const StoreRegisterFormValidator = (formData: StoreForm): ValidationResul
     isValid = false;
   }
 
+  // Password validation
+  if (!formData.storeInfo.password.trim()) {
+    errors.push('Password is required.');
+    isValid = false;
+  } else if (formData.storeInfo.password.length < 8) {
+    errors.push('Password must be at least 8 characters long.');
+    isValid = false;
+  } else if (!/(?=.*[A-Z])/.test(formData.storeInfo.password)) {
+    errors.push('Password must contain at least one uppercase letter.');
+    isValid = false;
+  } else if (!/(?=.*\d)/.test(formData.storeInfo.password)) {
+    errors.push('Password must contain at least one number.');
+    isValid = false;
+  }
+
   // Address Validation
   if (!formData.storeAddress.streetAddress.trim()) {
     errors.push('Street Address is required.');

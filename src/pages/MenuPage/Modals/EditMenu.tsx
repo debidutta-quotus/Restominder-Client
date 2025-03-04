@@ -1,20 +1,7 @@
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import { X, Upload, Plus, Trash2 } from 'lucide-react';
 import './EditMenu.css';
-
-interface MenuItemFormData {
-  itemName: string;
-  description: string;
-  price: number;
-  minPrepTime: number;
-  maxPrepTime: number;
-  maxPossibleOrders: number;
-  images: string[];
-  tags: string[];
-  category: string;
-  isVeg: boolean;
-  availability: boolean;
-}
+import { MenuItemFormData } from '../../../Types/Menu/Index';
 
 interface EditMenuProps {
   onClose: () => void;
@@ -182,7 +169,7 @@ const EditMenu: React.FC<EditMenuProps> = ({ onClose, onSubmit, menuItem }) => {
                   type="text"
                   id="itemName"
                   name="itemName"
-                  value={formData.itemName}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   placeholder="e.g. Chicken Tikka"

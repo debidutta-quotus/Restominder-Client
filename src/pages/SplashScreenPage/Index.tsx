@@ -19,8 +19,8 @@ const SplashScreenPage: React.FC<SplashScreenProps> = ({ onAnimationComplete }) 
         if (onAnimationComplete) {
           onAnimationComplete();
         }
-      }, 800);
-    }, 3000);
+      }, 400);
+    }, 800);
 
     return () => {
       clearTimeout(authCheckTimer);

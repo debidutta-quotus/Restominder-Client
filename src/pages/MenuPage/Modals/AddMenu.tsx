@@ -1,20 +1,12 @@
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import { X, Upload, Plus, Trash2 } from 'lucide-react';
 import './AddMenu.css';
-
-interface MenuItemFormData {
-  itemName: string;
-  description: string;
-  price: number;
-  minPrepTime: number;
-  maxPrepTime: number;
-  maxPossibleOrders: number;
-  images: string[];
-  tags: string[];
-  category: string;
-  isVeg: boolean;
-  availability: boolean;
-}
+import { MenuItemFormData } from '../../../Types/Menu/Index';
+import { AddMenuFormValidator } from '../../../utils/Validator/AddMenuFormValidator';
+import { showErrorToast, showSuccessToast } from '../../../utils/Toast/Toast';
+import { useNavigate } from 'react-router-dom';
+import { addMenu } from '../API/AddMenu';
+import { PulseLoader } from 'react-spinners';
 
 interface AddMenuProps {
   onClose: () => void;
@@ -26,26 +18,29 @@ const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c
 
 const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState<MenuItemFormData>({
-    itemName: '',
+    name: '',
     description: '',
     price: 0,
     minPrepTime: 0,
     maxPrepTime: 0,
-    maxPossibleOrders: 0,
-    images: [DEFAULT_IMAGE], // Initialize with default image
+    maxPossibleOrders: 1,
+    available: true,
+    images: [DEFAULT_IMAGE],
     tags: [],
     category: 'Appetizer',
     isVeg: false,
-    availability: false,
   });
 
   const [currentTag, setCurrentTag] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isAddMenuLoading, setIsAddMenuLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    
+
     if (type === 'checkbox') {
       const { checked } = e.target as HTMLInputElement;
       setFormData({ ...formData, [name]: checked });
@@ -88,7 +83,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
@@ -103,12 +98,12 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
   const handleFiles = (files: FileList) => {
     // Create a copy of the current images array
     const newImages = [...formData.images];
-    
+
     // Process each file
     Array.from(files).forEach(file => {
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
-        
+
         reader.onload = (e) => {
           if (e.target && typeof e.target.result === 'string') {
             // Check if this is the first upload and we have the default image
@@ -119,7 +114,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
               // Otherwise add to the array
               newImages.push(e.target.result);
             }
-            
+
             // Update state with new images array
             setFormData({
               ...formData,
@@ -127,12 +122,12 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
             });
           }
         };
-        
+
         // Reset the file input to ensure the same file can be selected again
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
-        
+
         reader.readAsDataURL(file);
       }
     });
@@ -141,12 +136,12 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
   const removeImage = (index: number) => {
     const newImages = [...formData.images];
     newImages.splice(index, 1);
-    
+
     // If all images are removed, add back the default image
     if (newImages.length === 0) {
       newImages.push(DEFAULT_IMAGE);
     }
-    
+
     setFormData({
       ...formData,
       images: newImages,
@@ -161,8 +156,30 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+
+    const validationResult = AddMenuFormValidator(formData);
+
+    if (validationResult.isValid) {
+      try {
+
+        setIsAddMenuLoading(true);
+        const responseData = await addMenu(formData);
+        setIsAddMenuLoading(false);
+        console.log('Registration response:', responseData);
+        showSuccessToast('Store registration successful!');
+        navigate('/dashboard');
+      } catch (error: any) {
+        showErrorToast(error.message || 'Registration failed. Please try again.');
+      }
+    } else {
+      if (validationResult.errors.length > 0) {
+        showErrorToast(validationResult.errors[0]);
+      }
+    }
+
     onSubmit(formData);
   };
 
@@ -177,23 +194,23 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
             <X size={24} />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="add-menu-form">
           <div className="add-menu-form-grid">
             <div className="add-menu-form-column">
               <div className="add-menu-form-group">
-                <label htmlFor="itemName">Item Name</label>
+                <label htmlFor="name">Item Name</label>
                 <input
                   type="text"
-                  id="itemName"
-                  name="itemName"
-                  value={formData.itemName}
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   placeholder="e.g. Chicken Tikka"
                 />
               </div>
-              
+
               <div className="add-menu-form-group">
                 <label htmlFor="description">Description</label>
                 <textarea
@@ -206,7 +223,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   rows={3}
                 />
               </div>
-              
+
               <div className="add-menu-form-row">
                 <div className="add-menu-form-group">
                   <label htmlFor="price">Price ($)</label>
@@ -222,7 +239,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                     placeholder="0.00"
                   />
                 </div>
-                
+
                 <div className="add-menu-form-group">
                   <label htmlFor="category">Category</label>
                   <select
@@ -240,7 +257,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="add-menu-form-row">
                 <div className="add-menu-form-group">
                   <label htmlFor="minPrepTime">Min Prep Time (mins)</label>
@@ -255,7 +272,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                     placeholder="0"
                   />
                 </div>
-                
+
                 <div className="add-menu-form-group">
                   <label htmlFor="maxPrepTime">Max Prep Time (mins)</label>
                   <input
@@ -270,7 +287,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   />
                 </div>
               </div>
-              
+
               <div className="add-menu-form-row">
                 <div className="add-menu-form-group">
                   <label htmlFor="maxPossibleOrders">Max Possible Orders</label>
@@ -285,7 +302,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                     placeholder="0"
                   />
                 </div>
-                
+
                 <div className="add-menu-form-group add-menu-checkbox-group">
                   <label htmlFor="isVeg" className="add-menu-checkbox-label">
                     <input
@@ -300,7 +317,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="add-menu-form-column">
               <div className="add-menu-form-group">
                 <label>Tags</label>
@@ -324,10 +341,10 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="add-menu-form-group">
                 <label>Images</label>
-                <div 
+                <div
                   className={`add-menu-image-upload-area ${isDragging ? 'add-menu-dragging' : ''}`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -345,15 +362,15 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   <Upload size={36} strokeWidth={1.5} />
                   <p>Drag & drop images here or click to browse</p>
                 </div>
-                
+
                 {formData.images.length > 0 && (
                   <div className="add-menu-image-preview-container">
                     {formData.images.map((image, index) => (
                       <div key={index} className="add-menu-image-preview">
                         <img src={image} alt={`Preview ${index}`} />
-                        <button 
-                          type="button" 
-                          className="add-menu-remove-image" 
+                        <button
+                          type="button"
+                          className="add-menu-remove-image"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeImage(index);
@@ -364,9 +381,9 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                       </div>
                     ))}
                     {formData.images.length < 5 && (
-                      <button 
-                        type="button" 
-                        className="add-menu-add-more-images" 
+                      <button
+                        type="button"
+                        className="add-menu-add-more-images"
                         onClick={(e) => {
                           e.stopPropagation();
                           triggerFileInput();
@@ -380,13 +397,19 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="add-menu-form-actions">
             <button type="button" className="add-menu-cancel-button" onClick={onClose}>
               Cancel
             </button>
             <button type="submit" className="add-menu-submit-button">
-              Add Menu Item
+              {!isAddMenuLoading ? "Add Menu Item" :
+                (<PulseLoader
+                  color="#fff"
+                  margin={5}
+                  size={5}
+                />)
+              }
             </button>
           </div>
         </form>
