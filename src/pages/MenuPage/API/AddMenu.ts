@@ -13,7 +13,7 @@ export const addMenu = async (formData: MenuItemFormData) => {
     }
 
     console.log(formData);
-    return;
+    // return;
 
     const response = await axios.post(`${baseURL}/menu`, formData);
     return response.data;

@@ -169,9 +169,10 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
         const responseData = await addMenu(formData);
         setIsAddMenuLoading(false);
         console.log('Registration response:', responseData);
-        showSuccessToast('Store registration successful!');
-        navigate('/dashboard');
+        showSuccessToast(responseData.message ||'Menu Addition successful!');
+        navigate('/menu');
       } catch (error: any) {
+        setIsAddMenuLoading(false);
         showErrorToast(error.message || 'Registration failed. Please try again.');
       }
     } else {

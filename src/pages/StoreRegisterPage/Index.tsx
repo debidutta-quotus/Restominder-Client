@@ -151,11 +151,12 @@ export default function StoreRegister() {
         setIsRegistrationLoading(true);
         const responseData = await registerStore(formData);
         setIsRegistrationLoading(false);
-        console.log('Registration response:', responseData);
-        showSuccessToast('Store registration successful!');
+        // console.log('Registration response:', responseData);
+        showSuccessToast(responseData.message || 'Store registered successfully');
         navigate('/dashboard');
       } catch (error: any) {
         showErrorToast(error.message || 'Registration failed. Please try again.');
+        setIsRegistrationLoading(false);
       }
     } else {
       if (validationResult.errors.length > 0) {

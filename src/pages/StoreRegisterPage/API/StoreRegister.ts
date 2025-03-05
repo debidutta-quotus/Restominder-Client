@@ -5,7 +5,7 @@ import { StoreForm } from '../../../Types';
 
 export const registerStore = async (formData: StoreForm) => {
   try {
-    const response = await axios.post(`${process.env.VITE_BASE_URL}/store/register`, formData);
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/store/register`, formData);
     return response.data;
 
   } catch (error) {
