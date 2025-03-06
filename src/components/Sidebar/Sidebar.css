@@ -142,7 +142,8 @@
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  min-height: 100vh;
 }
 
 .sidebar-component-page-title {

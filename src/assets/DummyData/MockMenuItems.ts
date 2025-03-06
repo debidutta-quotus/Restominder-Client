@@ -1,22 +1,5 @@
-export interface FoodItem {
-  _id: string,
-  storeId: string,
-  name: string;
-  description: string;
-  price: number;
-  minPrepTime: number;
-  maxPrepTime: number;
-  maxPossibleOrders: number;
-  images: string[];
-  tags: string[];
-  category: string;
-  isVeg: boolean;
-  available: boolean;
-}
+import { FoodItem } from "../../Types/Menu/Index";
 
-export interface CategoryGroup {
-  [key: string]: FoodItem[];
-}
 
 export const initialFoodItems: FoodItem[] = [
   // Appetizer
@@ -35,7 +18,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Spicy", "Crispy"],
     category: "Appetizer",
-    isVeg: true,
+    // isVeg: true,
   },
   {
     _id: "4",
@@ -52,7 +35,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Vegetarian", "Grilled"],
     category: "Appetizer",
-    isVeg: true,
+    // isVeg: true,
   },
 
   // Main Course
@@ -71,7 +54,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Chicken", "Curry"],
     category: "Main Course",
-    isVeg: true,
+    // isVeg: true,
   },
   {
     _id: "6",
@@ -88,7 +71,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Paneer", "Curry"],
     category: "Main Course",
-    isVeg: true,
+    // isVeg: true,
   },
 
 
@@ -107,7 +90,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Cold", "Refreshing"],
     category: "Beverage",
-    isVeg: true,
+    // isVeg: true,
   },
   {
     _id: "2",
@@ -124,7 +107,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Cold", "Coffee"],
     category: "Beverage",
-    isVeg: true,
+    // isVeg: true,
   },
   {
     _id: "10",
@@ -141,7 +124,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     tags: ["Pizza", "Vegetarian", "Italian"],
     category: "Main Course",
-    isVeg: true
+    // isVeg: true
   },
   {
     "_id": "12",
@@ -158,7 +141,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Burger", "Chicken", "Fast Food"],
     "category": "Main Course",
-    "isVeg": false
+    // "isVeg": false
   },
   {
     "_id": "13",
@@ -175,7 +158,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Dessert", "Chocolate", "Sweet"],
     "category": "Dessert",
-    "isVeg": true
+    // "isVeg": true
   },
   {
     "_id": "14",
@@ -192,7 +175,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Healthy", "Vegetarian", "Wrap"],
     "category": "Appetizer",
-    "isVeg": true
+    // "isVeg": true
   },
   {
     "_id": "15",
@@ -209,7 +192,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Cold", "Tea", "Beverage"],
     "category": "Beverage",
-    "isVeg": true
+    // "isVeg": true
   },
   {
     "_id": "16",
@@ -226,7 +209,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Pasta", "Italian", "Meat"],
     "category": "Main Course",
-    "isVeg": false
+    // "isVeg": false
   },
   {
     "_id": "17",
@@ -243,7 +226,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Healthy", "Fruit", "Dessert"],
     "category": "Dessert",
-    "isVeg": true
+    // "isVeg": true
   },
   {
     "_id": "18",
@@ -260,7 +243,7 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Fries", "Potato", "Fast Food"],
     "category": "Side Dish",
-    "isVeg": true
+    // "isVeg": true
   },
   {
     "_id": "19",
@@ -277,6 +260,6 @@ export const initialFoodItems: FoodItem[] = [
     ],
     "tags": ["Bread", "Garlic", "Italian"],
     "category": "Side Dish",
-    "isVeg": true
+    // "isVeg": true
   }
 ];

@@ -4,24 +4,48 @@ import logoImage from '../../../assets/Restominder/logo.png';
 import foodImage from '../../../assets/Restominder/food1.png';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../BackgroundPage/Index';
+import { LoginFormValidator } from '../../../utils/Validator/LoginFormValidator';
+import { loginUser } from './API/Index';
+import { PulseLoader } from 'react-spinners';
+import { showErrorToast, showSuccessToast } from '../../../utils/Toast/Toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoginBtnLoading, setIsLoginBtnLoading] = useState(false);
 
   const navigate = useNavigate();
 
-    const handleSignupClicked = () => {
-        navigate('/storeregister');
-    };
+  const handleSignupClicked = () => {
+    navigate('/storeregister');
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password, rememberMe });
-
-    navigate('/dashboard');
+  
+    const formData = { email, password, rememberMe };
+    const validation = LoginFormValidator(formData);
+  
+    if (!validation.isValid) {
+      console.log(validation.errors);
+      showErrorToast(validation.errors[0]);
+      return;
+    }
+  
+    setIsLoginBtnLoading(true);
+  
+    try {
+      const data = await loginUser(email, password);
+      console.log("data from api -", data);
+      showSuccessToast("Login Successful");
+      navigate("/menu");
+    } catch (error: any) {
+      showErrorToast(error.message);
+    } finally {
+      setIsLoginBtnLoading(false);
+    }
   };
 
   return (
@@ -68,14 +92,14 @@ const Login = () => {
                   placeholder="••••••••••"
                   required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="auth-login-page-toggle-password"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? 
+                  {showPassword ?
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg>
-                    : 
+                    :
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   }
                 </button>
@@ -95,7 +119,14 @@ const Login = () => {
               <a href="#" className="auth-login-page-forgot-password">Forgot Password?</a>
             </div>
 
-            <button type="submit" className="auth-login-page-login-button">Login</button>
+            <button type="submit" className="auth-login-page-login-button">
+              {!isLoginBtnLoading ? "Login" : (
+                <PulseLoader
+                  color="#ffffff"
+                  margin={2}
+                  size={8}
+                />)}
+            </button>
           </form>
 
           <div className="auth-login-page-divider">
@@ -108,7 +139,7 @@ const Login = () => {
               <span>Google</span>
             </button>
             <button className="auth-login-page-social-button facebook">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
               <span>Facebook</span>
             </button>
           </div>
@@ -126,7 +157,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      
+
       <Background />
     </div>
   );

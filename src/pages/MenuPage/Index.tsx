@@ -1,24 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import './Menu.css';
 import MenuCard from './components/MenuCard';
 import EditMenu from './Modals/EditMenu';
-import { FoodItem, initialFoodItems, CategoryGroup } from '../../assets/DummyData/MockMenuItems';
+// import { initialFoodItems } from '../../assets/DummyData/MockMenuItems';
 import veg from '../../assets/veg.png';
 import nonVeg from '../../assets/non_veg.png';
 import AddMenu from './Modals/AddMenu';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal'; // Import ConfirmationModal
 import { deleteMenuItem } from './Services/DeleteMenu'; // Import the service
-import { MenuItemFormData } from '../../Types/Menu/Index';
-
+import { CategoryGroup, FoodItem } from '../../Types/Menu/Index';
+import { getMenuItems } from './API/getMenuItemsAPI';
+import { PacmanLoader } from 'react-spinners';
+import { useNavigate } from 'react-router-dom';
 
 const MenuService: React.FC = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<FoodItem | null>(null);
-  const [foodItems, setFoodItems] = useState<FoodItem[]>(initialFoodItems);
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false); // State for modal
   const [deleteConfirmationMessage, setDeleteConfirmationMessage] = useState('');
+  const [isGettingMenuLoading, setIsGettingMenuLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsGettingMenuLoading(true);
+        const items = await getMenuItems(); // Fetch menu items
+        setFoodItems(items); // Update state with fetched data
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      } finally {
+        setIsGettingMenuLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Group items by category
   const itemsByCategory: CategoryGroup = foodItems.reduce((acc, item) => {
@@ -29,11 +50,11 @@ const MenuService: React.FC = () => {
     return acc;
   }, {} as CategoryGroup);
 
-  const handleAddMenuItem = (newItemFormData: MenuItemFormData) => {
+  const handleAddMenuItem = (newItemFormData: FoodItem) => {
     const newItem: FoodItem = {
       ...newItemFormData,
       _id: String(Date.now()), // Replace with your ID generation logic
-      storeId: "store001", // Replace with your store ID
+      storeId: "store001",
       available: true,
     };
 
@@ -49,12 +70,13 @@ const MenuService: React.FC = () => {
 
   const handleDeleteClick = (item: FoodItem) => {
     setSelectedItem(item);
+    console.log("item clicked to delete in MENU is - ", item);
     setDeleteConfirmationMessage(`Are you sure you want to delete "${item.name}"?`);
     setConfirmationModalOpen(true); // Open the modal
     console.log("item clicked to delete is - ", item);
   };
 
-  const handleEditSubmit = (updatedItem: MenuItemFormData) => {
+  const handleEditSubmit = (updatedItem: FoodItem) => {
     // Ensure we have the required properties from the original item
     const completeItem: FoodItem = {
       ...updatedItem,
@@ -72,12 +94,14 @@ const MenuService: React.FC = () => {
     if (selectedItem) {
       const success = await deleteMenuItem(selectedItem);
       if (success) {
-        setFoodItems((prevItems) => prevItems.filter((item) => item._id !== selectedItem._id));
+        // setFoodItems((prevItems) => prevItems.filter((item) => item._id !== selectedItem._id));
+
         setSelectedItem(null);
         setConfirmationModalOpen(false); // Close the modal
         setDeleteConfirmationMessage('');
+        navigate("/menu")
       } else {
-        // Handle failure (e.g., show an error message)
+        console.log("Failed to delete item");
       }
     }
   };
@@ -120,7 +144,16 @@ const MenuService: React.FC = () => {
       </header>
 
       <div className="menu-service-wrapper">
-        {Object.keys(itemsByCategory).length === 0 ? (
+        {isGettingMenuLoading ? (
+          <div className='menu-service-loading'>
+            <PacmanLoader
+              color="#434343"
+              margin={2}
+              size={25}
+              speedMultiplier={1}
+            />
+          </div>
+        ) : Object.keys(itemsByCategory).length === 0 ? (
           <div className="menu-service-empty-menu-state">
             <p>No menu items yet. Add your first item!</p>
             <button
@@ -149,6 +182,8 @@ const MenuService: React.FC = () => {
           ))
         )}
       </div>
+
+
 
       {showAddMenu && (
         <AddMenu

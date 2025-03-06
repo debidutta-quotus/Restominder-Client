@@ -4,7 +4,7 @@ import Signup from '../pages/AuthPage/signup/Index';
 import Login from '../pages/AuthPage/login/Index';
 import WelcomePage from '../pages/WelcomePage/Index';
 import StoreRegister from '../pages/StoreRegisterPage/Index';
-import MenuServices from '../pages/MenuPage/Menu';
+import MenuServices from '../pages/MenuPage/Index';
 import Dashboard from '../pages/Dashboard/Index';
 import SuccessAnimation from '../pages/SuccessAnimationPage/Index';
 import OrdersPage from '../pages/OrdersPage/Index';

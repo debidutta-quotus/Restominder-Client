@@ -1,34 +1,33 @@
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import { X, Upload, Plus, Trash2 } from 'lucide-react';
 import './AddMenu.css';
-import { MenuItemFormData } from '../../../Types/Menu/Index';
+import { FoodItem } from '../../../Types/Menu/Index';
 import { AddMenuFormValidator } from '../../../utils/Validator/AddMenuFormValidator';
 import { showErrorToast, showSuccessToast } from '../../../utils/Toast/Toast';
 import { useNavigate } from 'react-router-dom';
-import { addMenu } from '../API/AddMenu';
+import { addMenu } from '../API/addMenuItemAPI';
 import { PulseLoader } from 'react-spinners';
 
 interface AddMenuProps {
   onClose: () => void;
-  onSubmit: (data: MenuItemFormData) => void;
+  onSubmit: (data: FoodItem) => void;
 }
 
 // Default food image URL
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
 
 const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
-  const [formData, setFormData] = useState<MenuItemFormData>({
+  const [formData, setFormData] = useState<FoodItem>({
     name: '',
     description: '',
     price: 0,
     minPrepTime: 0,
     maxPrepTime: 0,
     maxPossibleOrders: 1,
-    available: true,
     images: [DEFAULT_IMAGE],
     tags: [],
     category: 'Appetizer',
-    isVeg: false,
+    available: true,
   });
 
   const [currentTag, setCurrentTag] = useState('');
@@ -173,7 +172,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
         navigate('/menu');
       } catch (error: any) {
         setIsAddMenuLoading(false);
-        showErrorToast(error.message || 'Registration failed. Please try again.');
+        showErrorToast(error.message || 'Menu Addition failed. Please try again.');
       }
     } else {
       if (validationResult.errors.length > 0) {
@@ -304,7 +303,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                   />
                 </div>
 
-                <div className="add-menu-form-group add-menu-checkbox-group">
+                {/* <div className="add-menu-form-group add-menu-checkbox-group">
                   <label htmlFor="isVeg" className="add-menu-checkbox-label">
                     <input
                       type="checkbox"
@@ -315,7 +314,7 @@ const AddMenu: React.FC<AddMenuProps> = ({ onClose, onSubmit }) => {
                     />
                     <span>Vegetarian</span>
                   </label>
-                </div>
+                </div> */}
               </div>
             </div>
 

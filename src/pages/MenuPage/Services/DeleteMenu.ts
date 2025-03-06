@@ -1,17 +1,12 @@
-// deleteMenuService.ts
-
-import { FoodItem } from '../../../assets/DummyData/MockMenuItems'; // Adjust the import path
+import { FoodItem } from "../../../Types/Menu/Index";
+import { deleteMenu } from "../API/deleteMenuItemAPI";
 
 export const deleteMenuItem = async (item: FoodItem): Promise<boolean> => {
   try {
-    // Simulate an API call with a setTimeout
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate 1 second delay
 
-    console.log("item delete request came");
+    console.log("item delete request came item - ", item);
 
-    const response = await fetch(`/api/food-items/${item._id}`, {
-      method: 'DELETE',
-    });
+    const response = await deleteMenu(item);
 
     if (response.ok) {
       console.log("Item deleted successfully (service):", item);

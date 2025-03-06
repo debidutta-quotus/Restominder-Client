@@ -8,25 +8,10 @@ import {
   ToggleRight,
 } from "lucide-react";
 import "./MenuCard.css";
-import veg from "../../../assets/veg.png";
-import nonVeg from "../../../assets/non_veg.png";
+// import veg from "../../../assets/veg.png";
+// import nonVeg from "../../../assets/non_veg.png";
 import { BeatLoader } from 'react-spinners';
-
-interface FoodItem {
-  _id: string;
-  storeId: string;
-  name: string;
-  description: string;
-  price: number;
-  available: boolean;
-  minPrepTime: number;
-  maxPrepTime: number;
-  maxPossibleOrders: number;
-  images: string[];
-  tags: string[];
-  category: string;
-  isVeg: boolean;
-}
+import { FoodItem } from "../../../Types/Menu/Index";
 
 interface MenuCardProps extends FoodItem {
   onEditClick: () => void;
@@ -45,7 +30,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
   images,
   tags,
   category,
-  isVeg,
+  // isVeg,
   onEditClick,
   onDeleteClick
 }) => {
@@ -75,8 +60,8 @@ const MenuCard: React.FC<MenuCardProps> = ({
                 <div className="food-card__diet-indicator-container">
                   <div className="food-card-veg-non-veg-img-container">
                     <img
-                      src={isVeg ? veg : nonVeg}
-                      alt={isVeg ? "Vegetarian" : "Non-vegetarian"}
+                      // src={isVeg ? veg : nonVeg}
+                      // alt={isVeg ? "Vegetarian" : "Non-vegetarian"}
                       className="food-card__diet-indicator"
                     />
                   </div>

@@ -1,5 +1,8 @@
-export interface MenuItemFormData {
-  storeId?: string;
+
+
+export interface FoodItem {
+  _id?: string,
+  storeId?: string,
   name: string;
   description: string;
   price: number;
@@ -9,6 +12,14 @@ export interface MenuItemFormData {
   images: string[];
   tags: string[];
   category: string;
-  isVeg: boolean;
+  isVeg?: boolean;
   available: boolean;
+}
+
+export interface CategoryGroup {
+  [key: string]: FoodItem[];
+}
+
+export interface MenuItemsResponse {
+  menus: FoodItem[];
 }

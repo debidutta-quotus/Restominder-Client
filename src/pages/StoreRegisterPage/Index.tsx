@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Store } from 'lucide-react';
 import './StoreRegister.css';
 import countriesData from '../../assets/countries.json';
@@ -7,9 +7,15 @@ import { showErrorToast, showSuccessToast } from '../../utils/Toast/Toast';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal';
 import { StoreForm } from '../../Types';
-import { deliveryPartners } from '../../assets/DummyData/MockDeleveryPartners';
-import { registerStore } from './API/StoreRegister';
+// import { deliveryPartners } from '../../assets/DummyData/MockDeleveryPartners';
+import { registerStore } from './API/storeRegister';
 import { PulseLoader } from 'react-spinners';
+import getDeliveryPartnerDetails from './API/getDeleveryPartnerDetails';
+
+interface DeliveryPartner {
+  id: number;
+  logo: string;
+}
 
 export const initialFormState: StoreForm = {
   storeInfo: {
@@ -98,11 +104,26 @@ export default function StoreRegister() {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
+  const [deliveryPartners, setDeliveryPartners] = useState<DeliveryPartner[]>([]);
 
   const navigate = useNavigate();
   const handleSkipClicked = () => {
     setIsConfirmationOpen(true);
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getDeliveryPartnerDetails(); // Assuming this returns data
+        console.log(response);
+        setDeliveryPartners(response);
+      } catch (error) {
+        console.error("Error fetching delivery partners:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   const handleInputChange = (section: string, name: string, value: any) => {
     setFormData(prev => ({
@@ -564,6 +585,7 @@ export default function StoreRegister() {
           value={formData.storeBankDetails.bankName}
           onChange={(e) => handleInputChange('storeBankDetails', 'bankName', e.target.value)}
           className="store-register-field"
+          required
         />
       </div>
 
