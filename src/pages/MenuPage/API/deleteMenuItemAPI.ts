@@ -18,7 +18,7 @@ export const deleteMenu = async (formData: FoodItem) => {
     }
 
     console.log('Delete form data:', formData._id);
-    return;
+    // return;
 
     const response = await axios.delete(`${POS_URL}/menu/${formData._id}`, {
       headers: {
@@ -32,7 +32,7 @@ export const deleteMenu = async (formData: FoodItem) => {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError; // Type assertion
 
-      console.error('Menu update failed:', axiosError.response?.data || axiosError.message);
+      console.error('Menu Delete failed:', axiosError.response?.data || axiosError.message);
       throw axiosError.response?.data || axiosError.message;
     } else {
       console.error('An unexpected error occurred:', error);

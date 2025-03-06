@@ -8,11 +8,12 @@ import veg from '../../assets/veg.png';
 import nonVeg from '../../assets/non_veg.png';
 import AddMenu from './Modals/AddMenu';
 import ConfirmationModal from '../../utils/Modal/ConfirmationModal'; // Import ConfirmationModal
-import { deleteMenuItem } from './Services/DeleteMenu'; // Import the service
+// import { deleteMenuItem } from './Services/DeleteMenu';
 import { CategoryGroup, FoodItem } from '../../Types/Menu/Index';
 import { getMenuItems } from './API/getMenuItemsAPI';
 import { PacmanLoader } from 'react-spinners';
 import { useNavigate } from 'react-router-dom';
+import { deleteMenu } from './API/deleteMenuItemAPI';
 
 const MenuService: React.FC = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -39,7 +40,7 @@ const MenuService: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [foodItems.length]);
 
   // Group items by category
   const itemsByCategory: CategoryGroup = foodItems.reduce((acc, item) => {
@@ -92,9 +93,9 @@ const MenuService: React.FC = () => {
 
   const handleDeleteItem = async () => {
     if (selectedItem) {
-      const success = await deleteMenuItem(selectedItem);
+      const success = await deleteMenu(selectedItem);
       if (success) {
-        // setFoodItems((prevItems) => prevItems.filter((item) => item._id !== selectedItem._id));
+        setFoodItems((prevItems) => prevItems.filter((item) => item._id !== selectedItem._id));
 
         setSelectedItem(null);
         setConfirmationModalOpen(false); // Close the modal

@@ -9,12 +9,14 @@ import Dashboard from '../pages/Dashboard/Index';
 import SuccessAnimation from '../pages/SuccessAnimationPage/Index';
 import OrdersPage from '../pages/OrdersPage/Index';
 import Sidebar from '../components/Sidebar/Index';
+import ProtectedRoutes from './ProtectedRoutes';
+import AuthRoutes from './AuthRoutes'; // ✅ Import the new wrapper
 
-// ✅ Create a Layout component that includes Sidebar
+// ✅ Sidebar Layout
 const Layout = () => {
   return (
     <Sidebar>
-      <Outlet /> {/* This will render the matched child route */}
+      <Outlet />
     </Sidebar>
   );
 };
@@ -22,22 +24,26 @@ const Layout = () => {
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Authentication & Public Routes */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path='/signup' element={<Signup />} />
-      <Route path='/success' element={<SuccessAnimation />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='/welcome' element={<WelcomePage />} />
-
-      {/* Protected Routes with Sidebar */}
-      <Route path='/storeregister' element={<StoreRegister />} />
-      <Route element={<Layout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/menu' element={<MenuServices />} />
-        <Route path='/orders' element={<OrdersPage />} />
+      {/* ✅ Public Routes (Wrapped in AuthRoutes) */}
+      <Route element={<AuthRoutes />}>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/success" element={<SuccessAnimation />} />
+        <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/storeregister" element={<StoreRegister />} />
       </Route>
 
-      {/* 404 Not Found Route */}
+      {/* ✅ Protected Routes */}
+      <Route element={<ProtectedRoutes />}>
+        <Route element={<Layout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/menu" element={<MenuServices />} />
+          <Route path="/orders" element={<OrdersPage />} />
+        </Route>
+      </Route>
+
+      {/* Default Redirect & 404 */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
