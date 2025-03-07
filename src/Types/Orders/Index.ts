@@ -17,6 +17,7 @@ export interface Order {
     storeId: string;
     menuId: string;
     orderStatus: 'new' | 'accepted' | 'completed' | 'rejected';
+    preparationStatus?: 'pending' | 'preparing' | 'completed' | 'dispatched';
     totalAmount: number;
     quantity: number;
     pickUpTime: string;

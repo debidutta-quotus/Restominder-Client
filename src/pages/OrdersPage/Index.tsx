@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, Clock, Package, History, ChefHat, Truck, User, Phone, Mail, ChevronDown, Search } from 'lucide-react';
+import { Check, X, Clock, Package, History, ChefHat, User, Phone, Mail, ChevronDown, Search } from 'lucide-react';
 import './OrdersPage.css';
 import { showErrorToast, showInfoToast, showSuccessToast } from '../../utils/Toast/Toast';
 import { Order } from '../../Types/index';
 import { mockOrders } from '../../assets/DummyData/MockOrders';
-
-// Define order types based on the received data structure
+import OrderStatusModal from './Modals/OrderStatusModal/Index';
 
 const OrdersPage: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>(mockOrders);
     const [filter, setFilter] = useState<'all' | 'uber' | 'doordash' | 'grubhub'>('all');
     const [view, setView] = useState<'active' | 'history'>('active');
     const [showHistoryModal, setShowHistoryModal] = useState(false);
-    // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [showCustomerDetails, setShowCustomerDetails] = useState<string | null>(null);
     const [showPartnerDropdown, setShowPartnerDropdown] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -40,6 +39,47 @@ const OrdersPage: React.FC = () => {
             ))
         )
     );
+
+    // Handle order status change
+    const handleStatusChange = (orderId: string, status: 'preparing' | 'completed' | 'dispatched') => {
+        setOrders(prev =>
+            prev.map(order => {
+                if (order.orderId === orderId) {
+                    const updatedOrder = {
+                        ...order,
+                        preparationStatus: status,
+                    };
+
+                    // If order is dispatched, move it to history
+                    if (status === 'dispatched') {
+                        updatedOrder.orderStatus = 'completed';
+                    }
+
+                    return updatedOrder;
+                }
+                return order;
+            })
+        );
+
+        // Show appropriate toast message
+        switch (status) {
+            case 'preparing':
+                showInfoToast(`Order ${orderId} is now being prepared`);
+                break;
+            case 'completed':
+                showSuccessToast(`Order ${orderId} preparation is complete`);
+                break;
+            case 'dispatched':
+                showSuccessToast(`Order ${orderId} has been dispatched`);
+                break;
+        }
+    };
+
+    // Open status modal for an order
+    const openStatusModal = (order: any) => {
+        setSelectedOrder(order);
+        setIsStatusModalOpen(true);
+    };
 
     // Toggle customer details visibility
     const toggleCustomerDetails = (orderId: string) => {
@@ -72,23 +112,6 @@ const OrdersPage: React.FC = () => {
         showErrorToast(`Order ${orderId} has been rejected`);
     };
 
-    // Complete an order
-    const handleComplete = (orderId: string) => {
-        setOrders(prev =>
-            prev.map(order =>
-                order.orderId === orderId ? { ...order, orderStatus: 'completed' } : order
-            )
-        );
-
-        showSuccessToast(`Order ${orderId} has been completed.`);
-    };
-
-    // Format date to readable format
-    // const formatDate = (dateString: string) => {
-    //     const date = new Date(dateString);
-    //     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    // };
-
     // Calculate time difference
     const getTimeDifference = (dateString: string) => {
         const orderDate = new Date(dateString);
@@ -116,6 +139,20 @@ const OrdersPage: React.FC = () => {
         const diffHours = Math.floor(diffMinutes / 60);
         if (diffHours === 1) return '1 hour';
         return `${diffHours} hours`;
+    };
+
+    // Get status tag component
+    const getStatusTag = (status: string | undefined) => {
+        switch (status) {
+            case 'preparing':
+                return <span className="status-tag status-preparing">Preparing</span>;
+            case 'completed':
+                return <span className="status-tag status-completed">Ready for Dispatch</span>;
+            case 'dispatched':
+                return <span className="status-tag status-dispatched">Dispatched</span>;
+            default:
+                return <span className="status-tag status-pending">Pending</span>;
+        }
     };
 
     // Simulate receiving new orders
@@ -153,7 +190,7 @@ const OrdersPage: React.FC = () => {
                 id: randomOrderId,
                 orderId: randomOrderId,
                 channelId: randomPartner,
-                storeId: fixedStoreId, // Using fixed store ID
+                storeId: fixedStoreId,
                 menuId: randomMenu,
                 orderStatus: 'new',
                 totalAmount: parseFloat(totalAmount.toFixed(2)),
@@ -168,12 +205,9 @@ const OrdersPage: React.FC = () => {
                 timestamp: new Date().toISOString()
             };
 
-            // Add the new order
             setOrders(prev => [newOrder, ...prev]);
-
-            showInfoToast(`New Order Received from ${newOrder.channelId.toUpperCase()}`)
-
-        }, 10000); // Add a new order every 3 min
+            showInfoToast(`New Order Received from ${newOrder.channelId.toUpperCase()}`);
+        }, 30000);
 
         return () => clearInterval(interval);
     }, []);
@@ -202,11 +236,6 @@ const OrdersPage: React.FC = () => {
         setFilter(partner);
         setShowPartnerDropdown(false);
     };
-
-    // View details of a specific order
-    // const viewOrderDetails = (order: Order) => {
-    //     setSelectedOrder(order);
-    // };
 
     // Handle modal content scroll
     const handleModalScroll = () => {
@@ -404,12 +433,13 @@ const OrdersPage: React.FC = () => {
                             acceptedOrders.map(order => (
                                 <motion.div
                                     key={order.orderId}
-                                    className="order-card"
+                                    className="order-card order-card-accepted-order"
                                     variants={cardVariants}
                                     initial="initial"
                                     animate="animate"
                                     exit="exit"
                                     layout
+                                    onClick={() => openStatusModal(order)}
                                 >
                                     <div className={`partner-label partner-${order.channelId}`}>
                                         {order.channelId === 'uber' ? 'UBER EATS' :
@@ -419,30 +449,8 @@ const OrdersPage: React.FC = () => {
 
                                     <div className="order-meta">
                                         <div className="order-time">{getTimeDifference(order.timestamp)}</div>
-                                        <button
-                                            className="customer-details-toggle"
-                                            onClick={() => toggleCustomerDetails(order.orderId)}
-                                        >
-                                            <User size={14} /> {order.customerDetails.name}
-                                        </button>
+                                        <div className="customer-name">{order.customerDetails.name}</div>
                                     </div>
-
-                                    {showCustomerDetails === order.orderId && (
-                                        <div className="customer-details-expanded">
-                                            <div className="customer-detail">
-                                                <User size={14} />
-                                                <span>{order.customerDetails.name}</span>
-                                            </div>
-                                            <div className="customer-detail">
-                                                <Phone size={14} />
-                                                <span>{order.customerDetails.phone}</span>
-                                            </div>
-                                            <div className="customer-detail">
-                                                <Mail size={14} />
-                                                <span>{order.customerDetails.email}</span>
-                                            </div>
-                                        </div>
-                                    )}
 
                                     <div className="order-details">
                                         <div className="detail-row">
@@ -450,14 +458,16 @@ const OrdersPage: React.FC = () => {
                                             <span className="detail-value">{order.quantity}</span>
                                         </div>
                                         <div className="detail-row">
-                                            <span className="detail-label">Pickup:</span>
-                                            <span className="detail-value pickup-time">{formatPickupTime(order.pickUpTime)}</span>
+                                            <span className="detail-label">Status:</span>
+                                            <span className="detail-value">
+                                                {getStatusTag(order.preparationStatus)}
+                                            </span>
                                         </div>
                                     </div>
 
                                     {order.items && (
                                         <div className="order-items">
-                                            {order.items.map((item, index) => (
+                                            {order.items.map((item: any, index: number) => (
                                                 <div className="item" key={index}>
                                                     <span className="item-name">{item.name}</span>
                                                     <span className="item-quantity">x{item.quantity}</span>
@@ -470,26 +480,11 @@ const OrdersPage: React.FC = () => {
                                         <span>Total</span>
                                         <span>${order.totalAmount.toFixed(2)}</span>
                                     </div>
-
-                                    <div className="order-actions">
-                                        <button
-                                            className="action-button accept-button"
-                                            onClick={() => handleComplete(order.orderId)}
-                                        >
-                                            <Package size={16} /> Complete
-                                        </button>
-                                        <button
-                                            className="action-button reject-button"
-                                            onClick={() => handleReject(order.orderId)}
-                                        >
-                                            <X size={16} /> Cancel
-                                        </button>
-                                    </div>
                                 </motion.div>
                             ))
                         ) : (
                             <div className="empty-column">
-                                <Truck className="empty-icon" />
+                                <Package className="empty-icon" />
                                 <div className="empty-text">No accepted orders</div>
                             </div>
                         )}
@@ -690,6 +685,16 @@ const OrdersPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Order Status Modal */}
+            {selectedOrder && (
+                <OrderStatusModal
+                    isOpen={isStatusModalOpen}
+                    onClose={() => setIsStatusModalOpen(false)}
+                    order={selectedOrder}
+                    onStatusChange={handleStatusChange}
+                />
             )}
         </div>
     );

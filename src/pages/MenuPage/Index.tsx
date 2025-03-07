@@ -54,8 +54,8 @@ const MenuService: React.FC = () => {
   const handleAddMenuItem = (newItemFormData: FoodItem) => {
     const newItem: FoodItem = {
       ...newItemFormData,
-      _id: String(Date.now()), // Replace with your ID generation logic
-      storeId: "store001",
+      // _id: String(Date.now()),
+      // storeId: "store001",
       available: true,
     };
 

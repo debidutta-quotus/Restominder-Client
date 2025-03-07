@@ -132,7 +132,7 @@
     background-color: white;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
@@ -141,7 +141,17 @@
   
   .order-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .order-card-accepted-order{
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .order-card-accepted-order:hover{
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transform: scale(1.5);
   }
   
   .order-card .partner-label {
@@ -684,6 +694,35 @@
   .customer-detail svg {
     color: #6e6e73;
   }
+
+  
+  .status-tag {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status-preparing {
+    background-color: #ffcc00; /* Yellow */
+    color: #663399; /* Dark Purple */
+}
+
+.status-completed {
+    background-color: #28a745; /* Green */
+    color: #ffffff; /* White */
+}
+
+.status-dispatched {
+    background-color: #007bff; /* Blue */
+    color: #ffffff; /* White */
+}
+
+.status-pending {
+    background-color: #6c757d; /* Grey */
+    color: #ffffff; /* White */
+}
+
   
   @keyframes fadeIn {
     from {
